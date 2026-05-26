@@ -21,4 +21,4 @@ export GIT_USER_EMAIL="${GIT_USER_EMAIL:-}"
 
 # Stow — universal packages stowed on every OS
 # OS-specific packages (e.g. apps) are declared in each distro's stow script
-export STOW_UNIVERSAL_PACKAGES=(bat btop fastfetch fish lazydocker lazygit neovim starship vscodium wezterm)
+export STOW_UNIVERSAL_PACKAGES=(fastfetch fish lazydocker lazygit neovim starship vscodium wezterm)

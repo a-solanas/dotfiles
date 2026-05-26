@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local reference copy of old dotfiles
+old_dotfiles/
+
+# Fish runtime state — machine-local, not config
+stow/fish/.config/fish/fish_variables

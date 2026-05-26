@@ -30,7 +30,9 @@ Tools installed on every machine regardless of distro. These form the baseline f
 | tlrc | Simplified man pages |
 | zoxide | Smarter `cd` |
 
-**Stow packages — universal** (stowed on all OSes): fish, wezterm, neovim, starship, btop, bat, fastfetch, lazygit, lazydocker, vscodium. Tools without meaningful config (eza, fd, fzf, glow, jq, ripgrep, tlrc, zoxide, stow, gh) are installed but not stowed.
+**Stow packages — universal** (stowed on all OSes): fish, wezterm, neovim, starship, fastfetch, lazygit, lazydocker, vscodium. Tools without meaningful config (eza, fd, fzf, glow, jq, ripgrep, tlrc, zoxide, stow, gh, bat) are installed but not stowed.
+
+> **Deferred packages**: btop — config needs a clean rewrite; add once done. vscodium/neovim/lazygit/lazydocker — no stow package yet, pending config work.
 
 **Stow packages — OS-specific** (stowed only on the relevant OS): apps (XDG `.desktop` entries and icons — Linux only; skipped by macOS stow script). Each distro's `07-stow.sh` controls which categories it stows.
 
