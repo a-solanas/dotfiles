@@ -174,6 +174,12 @@ config.mouse_bindings = {
   },
 }
 
+-- Fixed scroll speed on Linux (Wayland can report huge scroll deltas)
+if not wezterm.target_triple:find('apple') then
+  table.insert(config.mouse_bindings, { event = { Down = { streak = 1, button = { WheelUp   = 1 } } }, mods = 'NONE', action = wezterm.action.ScrollByLine(-3) })
+  table.insert(config.mouse_bindings, { event = { Down = { streak = 1, button = { WheelDown = 1 } } }, mods = 'NONE', action = wezterm.action.ScrollByLine(3) })
+end
+
 -- Font and color scheme
 config.font = wezterm.font 'JetBrains Mono'
 config.font_size = 16.0
