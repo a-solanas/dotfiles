@@ -26,6 +26,7 @@ Tracked from initial setup — candidates for the numbered scripts below:
 - Terminal tools: `ollama` and `opencode` via their curl installers
 - DNS change (distro-level)
 - UI tweaks: panel height → 42, font sizes → 11/9
+- Audio: disable ALSA auto-mute so line out and headphones work simultaneously — `amixer -c 0 set 'Auto-Mute Mode' 'Disabled' && sudo alsactl store`
 
 ## Script layout
 

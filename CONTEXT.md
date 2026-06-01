@@ -10,7 +10,7 @@ Tools installed on every machine regardless of distro. These form the baseline f
 |---|---|
 | fish | Primary shell |
 | bash | Scripting only |
-| wezterm | Terminal emulator |
+| wezterm | Terminal emulator — see [docs/wezterm.md](docs/wezterm.md) |
 | vscodium | Primary editor |
 | neovim | Terminal editor (LazyVim distribution) |
 | starship | Cross-shell prompt |

@@ -63,6 +63,9 @@ end
 # fzf configuration (customize appearance and behavior)
 set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --color=bg+:#3e4451,fg+:#ffffff,hl:#81a2be,hl+:#7aa6da'
 
+# Dotfiles root — used by the cheat function and the dotfiles abbreviation
+set -gx DOTFILES_DIR "$HOME/Developer/dotfiles"
+
 # ══════════════════════════════════════════════════════════════════════════════
 # SYSTEM/PERSONAL CONFIGURATION
 # ══════════════════════════════════════════════════════════════════════════════
@@ -71,7 +74,7 @@ set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --color=bg+:#3e
 # Abbreviations - General
 # ─────────────────────────────────────────────────────────────────────────────
 abbr fishconfig "$EDITOR ~/.config/fish/config.fish"
-abbr dotfiles "$EDITOR ~/.dotfiles"
+abbr dotfiles "$EDITOR $DOTFILES_DIR"
 
 # Modern CLI replacements (abbreviations expand inline for transparency)
 abbr find fd
@@ -120,7 +123,7 @@ abbr lzd lazydocker
 #        cheat wez      → only wezterm section
 #        cheat dev      → only dev-tools section
 function cheat
-    set -l dir ~/.dotfiles/docs/cheatsheet
+    set -l dir $DOTFILES_DIR/docs/cheatsheet
 
     if test (count $argv) -gt 0
         set -l match (find $dir -iname "*$argv[1]*" -name "*.md" | sort | head -1)

@@ -38,8 +38,12 @@ end
 -- Scrollback
 config.scrollback_lines = 10000
 
--- Window decorations - integrated buttons
-config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+-- macOS gets integrated traffic lights; Linux uses RESIZE only (move window with Meta+drag on KDE Wayland)
+if wezterm.target_triple:find('apple') then
+  config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+else
+  config.window_decorations = "RESIZE"
+end
 
 -- Pane proportional resizing - maintains equal splits when window resizes
 config.adjust_window_size_when_changing_font_size = false
@@ -57,106 +61,99 @@ config.tab_max_width = 32  -- Allow tabs to grow wider to fit names
 -- Tab bar position at bottom
 config.tab_bar_at_bottom = true
 
--- Window frame colors (title bar)
+-- Window frame colors (used by macOS integrated buttons titlebar)
 config.window_frame = {
   active_titlebar_bg = '#282c34',
   inactive_titlebar_bg = '#282c34',
 }
 
 -- Window background opacity
-config.window_background_opacity = 0.96
--- Window padding
+config.window_background_opacity = 0.97
+-- Window padding: macOS needs top=30 to clear the integrated traffic light buttons
 config.window_padding = {
   left = 3,
   right = 10,
-  top = 30,
+  top = wezterm.target_triple:find('apple') and 30 or 3,
   bottom = 0,
 }
 
 -- Keybindings
-config.keys = {
-  -- Font size
-  { key = '=', mods = 'CMD', action = wezterm.action.IncreaseFontSize },
-  { key = '+', mods = 'CMD', action = wezterm.action.IncreaseFontSize },
-  { key = '=', mods = 'CMD|SHIFT', action = wezterm.action.IncreaseFontSize },
-  { key = '-', mods = 'CMD', action = wezterm.action.DecreaseFontSize },
-  { key = '0', mods = 'CMD', action = wezterm.action.ResetFontSize },
+local function smart_split(window, pane)
+  local direction = get_smart_split_direction(pane)
+  if direction == 'Horizontal' then
+    pane:split { direction = 'Right' }
+  else
+    pane:split { direction = 'Bottom' }
+  end
+end
 
-  -- Reload configuration
-  { key = 'r', mods = 'CMD|SHIFT', action = wezterm.action.ReloadConfiguration },
+local function close_pane_if_not_last(window, pane)
+  local tab = window:active_tab()
+  local panes = tab:panes()
+  if #panes > 1 then
+    pane:activate()
+    window:perform_action(wezterm.action.CloseCurrentPane { confirm = false }, pane)
+  end
+end
 
-  -- Show debug overlay (includes keybindings)
-  { key = 'l', mods = 'CMD|SHIFT', action = wezterm.action.ShowDebugOverlay },
+local function toggle_transparency(window, _pane)
+  local overrides = window:get_config_overrides() or {}
+  if overrides.window_background_opacity == 1.0 then
+    overrides.window_background_opacity = nil
+  else
+    overrides.window_background_opacity = 1.0
+  end
+  window:set_config_overrides(overrides)
+end
 
-  -- Pane management - smart split (splits along longest dimension)
-  { 
-    key = 'd', 
-    mods = 'CMD', 
-    action = wezterm.action_callback(function(window, pane)
-      local direction = get_smart_split_direction(pane)
-      
-      if direction == 'Horizontal' then
-        pane:split { direction = 'Right' }
-      else
-        pane:split { direction = 'Bottom' }
-      end
-    end)
-  },
-  -- Manual split overrides (if you want explicit control)
-  { key = 'd', mods = 'CMD|SHIFT', action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' } },
-  { key = 'd', mods = 'CMD|OPT', action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-  
-  -- Close pane (but not if it's the last one)
-  { 
-    key = 's', 
-    mods = 'CMD', 
-    action = wezterm.action_callback(function(window, pane)
-      local tab = window:active_tab()
-      local panes = tab:panes()
-      
-      -- Only close if there's more than one pane
-      if #panes > 1 then
-        pane:activate()
-        window:perform_action(wezterm.action.CloseCurrentPane { confirm = false }, pane)
-      end
-    end)
-  },
-
-  -- Copy mode (visual selection)
-  { key = 'x', mods = 'CMD|SHIFT', action = wezterm.action.ActivateCopyMode },
-
-  -- Toggle transparency (CMD+SHIFT+T): switches between 0.96 (on) and 1.0 (off)
-  {
-    key = 't',
-    mods = 'CMD|SHIFT',
-    action = wezterm.action_callback(function(window, _pane)
-      local overrides = window:get_config_overrides() or {}
-      if overrides.window_background_opacity == 1.0 then
-        -- Restore transparency (revert to config default of 0.96)
-        overrides.window_background_opacity = nil
-      else
-        -- Disable transparency
-        overrides.window_background_opacity = 1.0
-      end
-      window:set_config_overrides(overrides)
-    end)
-  },
-
-  -- Open cheatsheet (Ctrl+Shift+C)
-  {
-    key = 'c',
-    mods = 'CTRL|SHIFT',
-    action = wezterm.action.SpawnCommandInNewTab {
-      args = { 'fish', '-c', 'cheat' },
-    }
-  },
-
-  -- Shift+Enter: send newline (for Claude Code multi-line input)
-  { key = 'Return', mods = 'SHIFT', action = wezterm.action.SendString('\x1b[13;2u') },
+local mac_keys = {
+  { key = '=',      mods = 'CMD',       action = wezterm.action.IncreaseFontSize },
+  { key = '+',      mods = 'CMD',       action = wezterm.action.IncreaseFontSize },
+  { key = '=',      mods = 'CMD|SHIFT', action = wezterm.action.IncreaseFontSize },
+  { key = '-',      mods = 'CMD',       action = wezterm.action.DecreaseFontSize },
+  { key = '0',      mods = 'CMD',       action = wezterm.action.ResetFontSize },
+  { key = 'r',      mods = 'CMD|SHIFT', action = wezterm.action.ReloadConfiguration },
+  { key = 'l',      mods = 'CMD|SHIFT', action = wezterm.action.ShowDebugOverlay },
+  { key = 'd',      mods = 'CMD',       action = wezterm.action_callback(smart_split) },
+  { key = 'd',      mods = 'CMD|SHIFT', action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' } },
+  { key = 'd',      mods = 'CMD|OPT',   action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' } },
+  { key = 's',      mods = 'CMD',       action = wezterm.action_callback(close_pane_if_not_last) },
+  { key = 'x',      mods = 'CMD|SHIFT', action = wezterm.action.ActivateCopyMode },
+  { key = 't',      mods = 'CMD|SHIFT', action = wezterm.action_callback(toggle_transparency) },
+  { key = 'h',      mods = 'CMD|SHIFT', action = wezterm.action.SpawnCommandInNewTab { args = { 'fish', '-c', 'cheat' } } },
+  { key = 'Return', mods = 'SHIFT',     action = wezterm.action.SendString('\x1b[13;2u') },
 }
 
+-- Linux: Super+D conflicts with KDE show-desktop; font size and close-pane use native terminal bindings
+-- (Ctrl+=/- for font, Ctrl+D EOF for close). CTRL+S overrides legacy XOFF — see ADR-0004.
+local linux_keys = {
+  { key = 'r',      mods = 'CTRL|SHIFT', action = wezterm.action.ReloadConfiguration },
+  { key = 'l',      mods = 'CMD|SHIFT', action = wezterm.action.ShowDebugOverlay },
+  { key = 's',      mods = 'CTRL',      action = wezterm.action_callback(smart_split) },
+  { key = 'x',      mods = 'CMD|SHIFT', action = wezterm.action.ActivateCopyMode },
+  { key = 't',      mods = 'CMD|SHIFT', action = wezterm.action_callback(toggle_transparency) },
+  { key = 'h',      mods = 'CMD|SHIFT', action = wezterm.action.SpawnCommandInNewTab { args = { 'fish', '-c', 'cheat' } } },
+  { key = 'Return', mods = 'SHIFT',     action = wezterm.action.SendString('\x1b[13;2u') },
+}
+
+if wezterm.target_triple:find('apple') then
+  config.keys = mac_keys
+else
+  config.keys = linux_keys
+end
+
 -- Mouse bindings
+-- Left-click defaults must be explicit: defining any mouse_bindings can displace WezTerm's defaults.
 config.mouse_bindings = {
+  { event = { Down = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Cell') },
+  { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Cell') },
+  { event = { Up   = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor('PrimarySelection') },
+  { event = { Down = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Word') },
+  { event = { Drag = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Word') },
+  { event = { Up   = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelection('PrimarySelection') },
+  { event = { Down = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Line') },
+  { event = { Drag = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Line') },
+  { event = { Up   = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelection('PrimarySelection') },
   -- Right click: paste from clipboard
   {
     event = { Down = { streak = 1, button = 'Right' } },

@@ -16,10 +16,10 @@ Suggested script split — see `scripts/pacman/README.md` for detail:
 
 ### Stow packages
 
-- [ ] `stow/fish/` — config.fish, functions, abbreviations
-- [ ] `stow/wezterm/` — wezterm.lua
+- [x] `stow/fish/` — config.fish, functions, abbreviations
+- [x] `stow/wezterm/` — wezterm.lua
 - [ ] `stow/neovim/` — LazyVim config
-- [ ] `stow/starship/` — starship.toml
+- [x] `stow/starship/` — starship.toml
 - [ ] `stow/btop/` — btop.conf
 - [ ] `stow/bat/` — config
 - [ ] `stow/fastfetch/` — config.jsonc
@@ -31,7 +31,7 @@ Suggested script split — see `scripts/pacman/README.md` for detail:
 
 - [ ] Update `docs/cheatsheet/` for Linux (currently macOS-focused, copied from work dotfiles)
 - [ ] Write `docs/setup-guide.md` for this repo
-- [ ] Move `previous.md` to `docs/previous.md` (loose file at root)
+- [x] Move `previous.md` to `docs/previous.md` (loose file at root)
 
 ### Review
 
