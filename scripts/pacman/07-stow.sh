@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../utils.sh"
 
 # OS-specific packages for Linux / pacman systems
-STOW_OS_PACKAGES=(apps)
+STOW_OS_PACKAGES=(apps kde)
 
 BACKUP_DIR="$BACKUP_BASE_DIR/dotfiles_$(date +%Y%m%d_%H%M%S)"
 

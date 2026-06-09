@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Toggle Audio Port
+Comment=Switch between Line Out and Headphones
+Exec=/home/nax/.local/bin/toggle-audio-port.sh
+Type=Application
+NoDisplay=true

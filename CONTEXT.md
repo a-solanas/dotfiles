@@ -30,11 +30,28 @@ Tools installed on every machine regardless of distro. These form the baseline f
 | tlrc | Simplified man pages |
 | zoxide | Smarter `cd` |
 
-**Stow packages — universal** (stowed on all OSes): fish, wezterm, neovim, starship, fastfetch, lazygit, lazydocker, vscodium. Tools without meaningful config (eza, fd, fzf, glow, jq, ripgrep, tlrc, zoxide, stow, gh, bat) are installed but not stowed.
+**Stow packages — universal** (stowed on all OSes): fish, wezterm, neovim, starship, fastfetch, lazygit, lazydocker, vscodium, scripts. Tools without meaningful config (eza, fd, fzf, glow, jq, ripgrep, tlrc, zoxide, stow, gh, bat) are installed but not stowed.
 
 > **Deferred packages**: btop — config needs a clean rewrite; add once done. vscodium/neovim/lazygit/lazydocker — no stow package yet, pending config work.
 
-**Stow packages — OS-specific** (stowed only on the relevant OS): apps (XDG `.desktop` entries and icons — Linux only; skipped by macOS stow script). Each distro's `07-stow.sh` controls which categories it stows.
+**Stow packages — OS-specific** (stowed only on the relevant OS): apps (XDG `.desktop` entries and icons — Linux only), kde (KDE Plasma config — Linux only). Each distro's `07-stow.sh` controls which categories it stows.
+
+## KDE global shortcuts
+
+KDE Plasma 6 dropped khotkeys. Custom shortcuts that run shell commands require a small persistent Python daemon that registers directly with kglobalaccel over D-Bus.
+
+Pattern used in this repo:
+- **Toggle script** (`stow/scripts/.local/bin/<name>`) — the command to run.
+- **Shortcut daemon** (`stow/scripts/.local/bin/<name>-shortcut`) — Python script: calls `kga.doRegister()` + `kga.setForeignShortcut()`, then loops on `GLib.MainLoop()` listening for `globalShortcutPressed` signal.
+- **KDE autostart** (`stow/kde/.config/autostart/<name>-shortcut.desktop`) — starts the daemon after the panel loads.
+
+The shortcut is persisted to `~/.config/kglobalshortcutsrc` by kglobalaccel on first run and survives daemon restarts. The `.desktop` autostart entry must set `X-KDE-autostart-after=panel` so kglobalaccel is ready when the daemon connects.
+
+Current shortcuts registered this way:
+
+| Shortcut | Action | Daemon |
+|---|---|---|
+| Ctrl+Shift+5 | Toggle audio between Line Out and Headphones | `audio-port-shortcut` |
 
 > **Future task**: add a `git` Stow package with a global `.gitconfig`. Key feature: `[includeIf]` to auto-select identity by directory. Deferred — personal and work machines are kept fully separate, so identity switching is not currently needed.
 
