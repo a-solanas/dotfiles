@@ -253,10 +253,10 @@ wezterm.on('format-tab-title', function(tab)
     dir = cwd_str:match('([^/]+)/?$') or '~'
   end
 
-  -- If running something other than the shell, show the process name
+  local shells = { fish = true, bash = true, zsh = true, sh = true, nu = true }
   local title = dir
-  if process ~= '' and not process:match('fish') and not process:match('bash') then
-    title = process
+  if process ~= '' and not shells[process] then
+    title = dir .. ' › ' .. process
   end
 
   local index = tab.tab_index + 1
