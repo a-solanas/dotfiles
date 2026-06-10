@@ -89,6 +89,18 @@ verify_symlinks() {
     fi
 }
 
+kde_fixup() {
+    print_step "KDE Post-Stow Fixups"
+
+    local plasma_cfg="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+    if [ -f "$plasma_cfg" ]; then
+        sed -i "s|/home/[^/]*/|$HOME/|g" "$plasma_cfg"
+        print_success "Patched absolute home paths in plasma config"
+    else
+        print_warning "plasma config not found — skipping fixup"
+    fi
+}
+
 main() {
     print_banner "Stow Dotfiles"
 
@@ -101,6 +113,9 @@ main() {
 
     # Step 2 — OS-specific (Linux / XDG)
     stow_pass "OS-Specific Packages" "${STOW_OS_PACKAGES[@]}"
+
+    # Step 3 — post-stow fixups for KDE (absolute path substitution)
+    kde_fixup
 
     verify_symlinks
 

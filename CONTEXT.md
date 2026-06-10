@@ -36,6 +36,18 @@ Tools installed on every machine regardless of distro. These form the baseline f
 
 **Stow packages — OS-specific** (stowed only on the relevant OS): apps (XDG `.desktop` entries and icons — Linux only), kde (KDE Plasma config — Linux only). Each distro's `07-stow.sh` controls which categories it stows.
 
+## KDE plasma config stowing
+
+KDE config files fall into three categories for stowing purposes:
+
+**Safe to stow as-is**: pure preference files with no machine state — `kdeglobals`, `breezerc`. Stow directly.
+
+**Stow with bootstrap fixup**: files that contain absolute `$HOME` paths written by KDE — primarily `plasma-org.kde.plasma.desktop-appletsrc`. Stowed into the `kde` package, then the bootstrap script (`scripts/pacman/07-stow.sh`) runs a `sed -i` to replace the hardcoded `/home/<user>/` with `$HOME` after symlinking. Username is not assumed to be constant across machines.
+
+**Do not stow**: files with machine-generated UUIDs or monitor-specific state — `kwinrc` (desktop UUIDs, tiling config keyed by UUID), `kscreenlocker`, `kwinoutputconfig.json`.
+
+The panel icon for the application launcher uses `stow/kde/.local/share/icons/archlinux.svg` (sourced from [JotaRandom/archlinux-artwork](https://github.com/JotaRandom/archlinux-artwork)). The path to this icon is the primary absolute-path reference in `plasma-org.kde.plasma.desktop-appletsrc` that requires the bootstrap fixup.
+
 ## KDE global shortcuts
 
 KDE Plasma 6 dropped khotkeys. Custom shortcuts that run shell commands require a small persistent Python daemon that registers directly with kglobalaccel over D-Bus.
@@ -136,4 +148,5 @@ Kali (`ID=kali`) is **never** run through the normal flow — `./setup.sh` on Ka
 - **Binary downloads are arch-aware** — scripts detect `amd64` vs `arm64` via `uname -m` at runtime. No hardcoded architecture assumptions.
 - **macOS is in scope but dormant** — `scripts/brew/` exists as a reference, seeded from work dotfiles. Not actively maintained until a personal Mac is in use.
 - **Stow packages are distro-agnostic** — config files are shared across all distros. OS-specific divergence lives only in the install scripts.
+- **KDE absolute paths fixed at bootstrap, not via templating** — KDE writes absolute `$HOME` paths into plasma config. Fixed with `sed -i` in the distro bootstrap script after stowing. chezmoi templating was considered and rejected — introducing a second dotfile manager for one substitution is unnecessary overhead.
 - **Permanently separate from work dotfiles** — work dotfiles covers the work laptop only. Personal repo covers personal machines. Work dotfiles serves as a reference/starting point, not a merge target.
