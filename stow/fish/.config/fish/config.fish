@@ -106,14 +106,17 @@ abbr uvs "uv sync"
 abbr uvi "uv init"
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Container Aliases (Podman/Docker - aliases needed for command override)
+# Container
 # ─────────────────────────────────────────────────────────────────────────────
-alias docker podman
-alias docker-compose podman-compose
 abbr lzd lazydocker
 
-# Uncomment if tools aren't picking up the Podman socket (e.g. after switching from Docker Desktop)
-# set -gx DOCKER_HOST "unix:///var/run/docker.sock"
+if string match -q 'Darwin' (uname)
+    # macOS: Podman Desktop replaces Docker; alias docker commands to podman
+    alias docker podman
+    alias docker-compose podman-compose
+    # Uncomment if tools aren't picking up the Podman socket (e.g. after switching from Docker Desktop)
+    # set -gx DOCKER_HOST "unix:///var/run/docker.sock"
+end
 
 
 # ─────────────────────────────────────────────────────────────────────────────
