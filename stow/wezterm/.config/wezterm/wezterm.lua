@@ -143,35 +143,8 @@ else
 end
 
 -- Mouse bindings
--- Left-click defaults must be explicit: defining any mouse_bindings can displace WezTerm's defaults.
 config.mouse_bindings = {
-  { event = { Down = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Cell') },
-  { event = { Drag = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Cell') },
-  { event = { Up   = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor('PrimarySelection') },
-  { event = { Down = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Word') },
-  { event = { Drag = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Word') },
-  { event = { Up   = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelection('PrimarySelection') },
-  { event = { Down = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.SelectTextAtMouseCursor('Line') },
-  { event = { Drag = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.ExtendSelectionToMouseCursor('Line') },
-  { event = { Up   = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.CompleteSelection('PrimarySelection') },
-  -- Right click: paste from clipboard
-  {
-    event = { Down = { streak = 1, button = 'Right' } },
-    mods = 'NONE',
-    action = wezterm.action.PasteFrom 'Clipboard',
-  },
-  -- Shift + Right click: force vertical split
-  {
-    event = { Down = { streak = 1, button = 'Right' } },
-    mods = 'SHIFT',
-    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
-  },
-  -- Cmd + Right click: force horizontal split
-  {
-    event = { Down = { streak = 1, button = 'Right' } },
-    mods = 'CMD',
-    action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
-  },
+  { event = { Up = { streak = 1, button = 'Right' } }, mods = 'NONE', action = wezterm.action.PasteFrom 'Clipboard' },
 }
 
 -- Fixed scroll speed on Linux (Wayland can report huge scroll deltas)
