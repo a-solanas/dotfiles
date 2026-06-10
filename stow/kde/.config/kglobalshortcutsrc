@@ -267,3 +267,10 @@ toggle do not disturb=,,Toggle do not disturb
 [services][net.local.toggle-audio-port.sh.desktop]
 _launch=Ctrl+%
 
+[services][org.kde.spectacle.desktop]
+CurrentMonitorScreenShot=
+OpenWithoutScreenshot=
+
+[toggle_audio_port]
+_k_friendly_name=Toggle Audio Port
+toggle=Ctrl+Shift+5,none,Toggle Audio Port
