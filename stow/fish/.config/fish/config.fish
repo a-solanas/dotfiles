@@ -109,6 +109,7 @@ abbr uvi "uv init"
 # Container
 # ─────────────────────────────────────────────────────────────────────────────
 abbr lzd lazydocker
+abbr k kubectl
 
 if string match -q 'Darwin' (uname)
     # macOS: Podman Desktop replaces Docker; alias docker commands to podman
