@@ -143,7 +143,7 @@ end
 
 config.keys = {
   { key = 's', mods = 'CTRL', action = wezterm.action_callback(smart_split) },
-  { key = 'd', mods = 'CTRL', action = wezterm.action.CloseCurrentPane { confirm = false } },
+  { key = 'd', mods = 'CTRL|SHIFT', action = wezterm.action.CloseCurrentPane { confirm = false } },
 }
 
 -- Right-click paste (context menu unreliable on KDE Wayland)
