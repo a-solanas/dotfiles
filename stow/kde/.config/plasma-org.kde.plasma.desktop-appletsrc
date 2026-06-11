@@ -43,7 +43,7 @@ immutability=1
 plugin=org.kde.plasma.icontasks
 
 [Containments][23][Applets][26][Configuration][General]
-launchers=applications:systemsettings.desktop,applications:org.wezfurlong.wezterm.desktop,preferred://filemanager,applications:firefox.desktop,applications:obsidian.desktop,applications:steam.desktop,applications:chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Profile_1.desktop,applications:discord.desktop
+launchers=applications:systemsettings.desktop,preferred://filemanager,applications:org.wezfurlong.wezterm.desktop,applications:firefox.desktop,applications:vscodium.desktop,applications:obsidian.desktop,applications:chrome-hnpfjngllnobngcgfapefoaidbinmjnm-Profile_1.desktop,applications:steam.desktop,applications:discord.desktop
 
 [Containments][23][Applets][27]
 immutability=1
@@ -347,4 +347,4 @@ AppletOrder=74;75;97;76;98;77;78;95;96
 
 [ScreenMapping]
 itemsOnDisabledScreens=
-screenMapping=desktop:/steam.desktop,0,ab8346b2-234d-4327-b318-9e62c82edfb2,desktop:/Path of Exile 2,0,ab8346b2-234d-4327-b318-9e62c82edfb2
+screenMapping=

@@ -1,0 +1,15 @@
+[2c873677-008d-479c-aa37-d16626cdc3aa]
+Description=Obsidian
+noborderrule=2
+wmclass=obsidian
+wmclassmatch=1
+
+[5b7d608f-45f7-45f3-bb84-75746fb8abc8]
+Description=Wezterm
+noborderrule=2
+wmclass=wezterm
+wmclassmatch=1
+
+[General]
+count=2
+rules=5b7d608f-45f7-45f3-bb84-75746fb8abc8,2c873677-008d-479c-aa37-d16626cdc3aa
