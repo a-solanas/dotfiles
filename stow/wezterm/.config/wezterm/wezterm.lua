@@ -141,13 +141,29 @@ local function smart_split(window, pane)
   end
 end
 
+local function toggle_transparency(window, _pane)
+  local overrides = window:get_config_overrides() or {}
+  if overrides.window_background_opacity == 1.0 then
+    overrides.window_background_opacity = nil
+  else
+    overrides.window_background_opacity = 1.0
+  end
+  window:set_config_overrides(overrides)
+end
+
 config.keys = {
-  { key = 's', mods = 'CTRL', action = wezterm.action_callback(smart_split) },
-  { key = 'd', mods = 'CTRL|SHIFT', action = wezterm.action.CloseCurrentPane { confirm = false } },
+  { key = 's',    mods = 'CTRL',       action = wezterm.action_callback(smart_split) },
+  { key = 'd',    mods = 'CTRL|SHIFT', action = wezterm.action.CloseCurrentPane { confirm = false } },
+  { key = '\\',   mods = 'CTRL',       action = wezterm.action_callback(toggle_transparency) },
 }
 
--- Right-click paste (context menu unreliable on KDE Wayland)
+-- Mouse bindings
+-- Override Up events so selection is never auto-copied to primary or clipboard.
+-- Use Ctrl+Shift+C to explicitly copy. Links still open on single click.
 config.mouse_bindings = {
+  { event = { Up = { streak = 1, button = 'Left' } }, mods = 'NONE', action = wezterm.action.OpenLinkAtMouseCursor },
+  { event = { Up = { streak = 2, button = 'Left' } }, mods = 'NONE', action = wezterm.action.Nop },
+  { event = { Up = { streak = 3, button = 'Left' } }, mods = 'NONE', action = wezterm.action.Nop },
   { event = { Up = { streak = 1, button = 'Right' } }, mods = 'NONE', action = wezterm.action.PasteFrom 'Clipboard' },
 }
 
