@@ -95,6 +95,14 @@ _Avoid_: install, setup, provisioning
 Any config file managed by this repo (whether symlinked via Stow or installed by a script). Not just hidden files.
 _Avoid_: config file (too generic)
 
+**Layout**:
+A named WezTerm workspace definition — a specific pane structure, split geometry, and per-pane CWD. May include optional startup commands for stateless processes (servers, watchers). Defined as a fish function or config file; invoked via the fzf layout picker.
+_Avoid_: session (overloaded), workspace (WezTerm's internal term), template
+
+**Session**:
+A saved snapshot of a live WezTerm window — pane CWDs and foreground process names captured via `wezterm cli list` and written to `~/.config/wezterm/sessions/`. Restored on demand via the fzf session picker. Process state is not saved; only structure and directories.
+_Avoid_: layout (a layout is a definition; a session is a snapshot of live state)
+
 ## Relationships
 
 - A **Package** contains one or more **Dotfiles**
@@ -148,5 +156,6 @@ Kali (`ID=kali`) is **never** run through the normal flow — `./setup.sh` on Ka
 - **Binary downloads are arch-aware** — scripts detect `amd64` vs `arm64` via `uname -m` at runtime. No hardcoded architecture assumptions.
 - **macOS is in scope but dormant** — `scripts/brew/` exists as a reference, seeded from work dotfiles. Not actively maintained until a personal Mac is in use.
 - **Stow packages are distro-agnostic** — config files are shared across all distros. OS-specific divergence lives only in the install scripts.
+- **WezTerm-native layout management, no local multiplexer** — layouts and session snapshots are managed via WezTerm CLI + fish functions + fzf. tmux/zellij are not configured locally; retained for ad-hoc SSH use on remote machines only. See [ADR-0005](docs/adr/0005-wezterm-native-layout-management.md).
 - **KDE absolute paths fixed at bootstrap, not via templating** — KDE writes absolute `$HOME` paths into plasma config. Fixed with `sed -i` in the distro bootstrap script after stowing. chezmoi templating was considered and rejected — introducing a second dotfile manager for one substitution is unnecessary overhead.
 - **Permanently separate from work dotfiles** — work dotfiles covers the work laptop only. Personal repo covers personal machines. Work dotfiles serves as a reference/starting point, not a merge target.

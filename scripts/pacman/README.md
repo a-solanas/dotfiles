@@ -28,6 +28,7 @@ Tracked from initial setup — candidates for the numbered scripts below:
 - UI tweaks: panel height → 42, font sizes → 11/9
 - Audio: disable ALSA auto-mute so line out and headphones work simultaneously — `amixer -c 0 set 'Auto-Mute Mode' 'Disabled' && sudo alsactl store`
 - Wayland clipboard: `sudo pacman -S wl-clipboard` — required for Claude Code image pasting on Wayland
+- Torrents: `sudo pacman -S transmission-qt` — configure RPC (user/pass from password manager) manually after install; Firefox extension: https://addons.mozilla.org/en-US/firefox/addon/torrent-control/
 
 ## Script layout
 
