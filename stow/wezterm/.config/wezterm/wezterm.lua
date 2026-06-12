@@ -167,4 +167,10 @@ config.mouse_bindings = {
   { event = { Up = { streak = 1, button = 'Right' } }, mods = 'NONE', action = wezterm.action.PasteFrom 'Clipboard' },
 }
 
+-- KDE Wayland reports large scroll deltas causing page-jump behavior; cap to 3 lines per tick.
+if not wezterm.target_triple:find('apple') then
+  table.insert(config.mouse_bindings, { event = { Down = { streak = 1, button = { WheelUp   = 1 } } }, mods = 'NONE', action = wezterm.action.ScrollByLine(-3) })
+  table.insert(config.mouse_bindings, { event = { Down = { streak = 1, button = { WheelDown = 1 } } }, mods = 'NONE', action = wezterm.action.ScrollByLine(3) })
+end
+
 return config
