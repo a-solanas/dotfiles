@@ -265,17 +265,20 @@ switch to previous activity=,,Switch to Previous Activity
 toggle do not disturb=,,Toggle do not disturb
 
 [services][com.mitchellh.ghostty.desktop]
-_launch=
+_launch=none
 
 [services][net.local.toggle-audio-port.sh.desktop]
 _launch=Ctrl+%
+
+[services][org.kde.konsole.desktop]
+_launch=none
 
 [services][org.kde.spectacle.desktop]
 CurrentMonitorScreenShot=
 OpenWithoutScreenshot=
 
 [services][org.wezfurlong.wezterm.desktop]
-_launch=,\s
+_launch=Ctrl+Alt+T
 
 [toggle_audio_port]
 _k_friendly_name=Toggle Audio Port
