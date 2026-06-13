@@ -30,7 +30,7 @@ config.window_close_confirmation = "NeverPrompt"
 -- Tab bar
 config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = false
-config.tab_max_width = 32
+config.tab_max_width = 26
 config.tab_bar_at_bottom = true
 
 -- Window frame colors (macOS integrated buttons titlebar)
@@ -101,24 +101,16 @@ config.colors = {
   },
 }
 
--- Tab title: show folder name, or folder › process when something is running
+-- Tab title: "{n}: {pane_title}" where pane_title is fish's OSC 2 title, post-processed:
+-- paths collapsed to last component (~/Developer/dotfiles → dotfiles), ' - ' → ' > '
+-- Note: wezterm clears all handlers when the config reloads (Lua state rebuilt from scratch),
+-- so no guard against accumulation is needed.
 wezterm.on('format-tab-title', function(tab)
-  local process = tab.active_pane.foreground_process_name or ''
-  process = process:match('([^/]+)$') or process
-
-  local cwd = tab.active_pane.current_working_dir
-  local dir = ''
-  if cwd then
-    local cwd_str = cwd.file_path or tostring(cwd)
-    dir = cwd_str:match('([^/]+)/?$') or '~'
-  end
-
-  local shells = { fish = true, bash = true, zsh = true, sh = true, nu = true }
-  local title = dir
-  if process ~= '' and not shells[process] then
-    title = dir .. ' › ' .. process
-  end
-
+  local title = tab.active_pane.title or ''
+  title = title:gsub('([~/][%w%./%-_~]+)/?', function(path)
+    return path:match('([^/]+)/?$') or path
+  end)
+  title = title:gsub(' %- ', ' > ')
   return string.format(' %d: %s ', tab.tab_index + 1, title)
 end)
 
